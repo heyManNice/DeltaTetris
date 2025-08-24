@@ -1,48 +1,5 @@
-class MyError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = "MyError";
-        alert(message);
-    }
-}
-
-// 板子
-class Board {
-    rows: number;
-    cols: number;
-    offsetY: number;
-    cellWidth: number;
-    cellHeight: number;
-    cells: number[];
-    constructor(
-        rows: number = 13,
-        cols: number = 9,
-        offsetY: number = 0,
-        width: number = 30,
-        height: number = 30,
-    ) {
-        this.rows = rows;
-        this.cols = cols;
-        this.offsetY = offsetY;
-        this.cellWidth = width / cols;
-        this.cellHeight = (height - offsetY) / rows;
-        this.cells = Array.from({ length: rows }, () => 0);
-    }
-    drawCells(ctx: CanvasRenderingContext2D) {
-        ctx.strokeStyle = "rgba(0, 0, 0, 1)";
-        ctx.lineWidth = 1;
-        for (let y = 0; y < this.rows; y++) {
-            for (let x = 0; x < this.cols; x++) {
-                ctx.strokeRect(
-                    x * this.cellWidth,
-                    y * this.cellHeight + this.offsetY,
-                    this.cellWidth,
-                    this.cellHeight,
-                );
-            }
-        }
-    }
-}
+import { MyError } from "./error";
+import { Board } from "./board";
 
 class Tetris {
     ctx: CanvasRenderingContext2D;
@@ -55,7 +12,6 @@ class Tetris {
     constructor() {
         this.initCanvas();
         this.initBoard();
-        this.initKeyboard();
     }
 
     initCanvas() {
@@ -82,30 +38,16 @@ class Tetris {
     }
     initBoard() {
         const offsetY = -0.4 * this.width / 9;
-        this.board = new Board(13, 9, offsetY, this.width, this.height);
-        this.board.drawCells(this.ctx);
+        this.board = new Board(
+            13,
+            9,
+            offsetY,
+            this.width,
+            this.height,
+            this.ctx,
+        );
     }
-    initKeyboard() {
-        document.addEventListener("keydown", (e) => {
-            switch (e.key) {
-                case "w":
-                    this.wPress();
-                    break;
-                case "a":
-                    this.aPress();
-                    break;
-                case "s":
-                    this.sPress();
-                    break;
-                case "d":
-                    this.dPress();
-                    break;
-                case " ":
-                    this.SpacePress();
-                    break;
-            }
-        });
-    }
+
     setScore(value: number) {
         const score = document.querySelector("score");
         if (!score) {
@@ -123,18 +65,15 @@ class Tetris {
     start() {
         this.timer = setInterval(() => {
             this.setScore(this.score++);
+            this.loop();
         }, 1000);
     }
-    wPress() {
-        console.log("wPress");
-    }
-    aPress() {}
-    sPress() {}
-    dPress() {}
-    SpacePress() {
-        console.log("SpacePress");
+    loop() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.board.loop();
     }
 }
 
 const tetris = new Tetris();
 tetris.start();
+console.log(tetris);
