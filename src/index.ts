@@ -51,6 +51,10 @@ class Tetris {
             this.score += 100;
             this.setScore(this.score);
         };
+        this.board.onGameOver = () => {
+            alert("Game Over");
+            clearInterval(this.timer!);
+        };
     }
 
     setScore(value: number) {

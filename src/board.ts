@@ -53,6 +53,7 @@ export class Board {
     cellsStatic: number[];
     ctx: CanvasRenderingContext2D;
     onAddScore: () => void;
+    onGameOver: () => void;
     constructor(
         rows: number = 13,
         cols: number = 9,
@@ -150,20 +151,13 @@ export class Board {
         this.draw();
     }
     fall() {
-        if (!this.cellsActive) {
-            return;
+        //如果第一行有1，那么游戏结束
+        if (this.cellsStatic[1] !== 0) {
+            if (this.onGameOver) {
+                this.onGameOver();
+            }
+            this.cellsStatic = Array.from({ length: this.rows }, () => 0);
         }
-        const shapeData = this.cellsActive.data;
-        const shapeHeight = shapeData.length;
-        const shapeBottomRow = shapeData[shapeData.length - 1] << this.cellsActive.x;
-        const nextRow = this.cellsStatic[this.cellsActive.y + shapeHeight];
-        
-        if(nextRow === void 0 || (shapeBottomRow & nextRow) !== 0) {
-            this.merge();
-            this.addRandomShape();
-            return;
-        }
-        this.cellsActive.y++;
 
         // 如果有任意一行全为1，那么就消去，并加分
         for (let y = 0; y < this.cellsStatic.length; y++) {
@@ -176,6 +170,21 @@ export class Board {
                 }
             }
         }
+        if (!this.cellsActive) {
+            return;
+        }
+        const shapeData = this.cellsActive.data;
+        const shapeHeight = shapeData.length;
+        const shapeBottomRow = shapeData[shapeData.length - 1] <<
+            this.cellsActive.x;
+        const nextRow = this.cellsStatic[this.cellsActive.y + shapeHeight];
+
+        if (nextRow === void 0 || (shapeBottomRow & nextRow) !== 0) {
+            this.merge();
+            this.addRandomShape();
+            return;
+        }
+        this.cellsActive.y++;
     }
     // 合并
     merge() {
@@ -184,9 +193,9 @@ export class Board {
         }
         const data = this.cellsActive.data;
         for (let y = 0; y < data.length; y++) {
-            this.cellsStatic[y + this.cellsActive.y] |= data[y] << this.cellsActive.x;
+            this.cellsStatic[y + this.cellsActive.y] |= data[y] <<
+                this.cellsActive.x;
         }
-        
     }
     draw() {
         this.ctx.clearRect(0, 0, this.boardWidth, this.boardHeight);
