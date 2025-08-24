@@ -20,6 +20,7 @@
             height: 100vh;
             width: calc(100vh * 16 / 9);
             margin: 0 auto;
+            left: 0;
             right: 0;
             position: absolute;
         }
@@ -59,10 +60,156 @@
             left: 79.97%;
             font-size: 1.25rem;
         }
+
+        gameOver {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-color: #0F1C24;
+            z-index: 20;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: gameover 200ms ease-out forwards;
+            display: none;
+        }
+
+        gameOver>p {
+            color: #DB312F;
+            font-size: 12rem;
+            font-weight: bold;
+            z-index: 30;
+            background-color: #0F1C24;
+            padding: 0 10rem;
+        }
+
+        gameOver>p::before {
+            content: '';
+            position: absolute;
+            background-color: #DB312F;
+            left: 20%;
+            width: 30%;
+            height: 18rem;
+            animation: gameover_p_before 800ms ease-in forwards;
+        }
+
+        gameOver>p::after {
+            content: '';
+            position: absolute;
+            background-color: #DB312F;
+            right: 20%;
+            width: 30%;
+            height: 18rem;
+            animation: gameover_p_after 800ms ease-in forwards;
+        }
+
+        @keyframes gameover {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes gameover_p_before {
+            0% {
+                width: 40%;
+                transform: translateX(0%) scale(0.5);
+            }
+
+            30% {
+                width: 30%;
+                transform: translateX(0%) scale(1);
+            }
+
+            100% {
+                width: 0;
+                transform: translateX(-150%);
+            }
+        }
+
+        @keyframes gameover_p_after {
+            0% {
+                width: 40%;
+                transform: translateX(0%) scale(0.5);
+            }
+            30% {
+                width: 30%;
+                transform: translateX(0%) scale(1);
+            }
+
+            100% {
+                width: 0;
+                transform: translateX(150%);
+            }
+        }
+
+        adorn {
+            position: absolute;
+            width: 40vw;
+            height: 40vw;
+            border-radius: 100%;
+            border: 0.5rem dotted #767C83;
+            animation: adorn 180s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes adorn {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        gameOver::before {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height:2px;
+            background-color: #767C83;
+        }
+        gameOver>summ{
+            position: fixed;
+            bottom: 20%;
+            text-align: center;
+            color: #767C83;
+        }
+        gameOver>summ>p{
+            font-size: 1.25rem;
+            margin: 0;
+        }
+        gameOver>summ>button{
+            padding: 1rem 5rem;
+            background-color: transparent;
+            border: 1px solid #3AB790;
+            color: #3AB790;
+            font-size: 1.25rem;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+        gameOver>summ>button:hover{
+            background-color: #3AB790;
+            color: #0F1C24;
+        }
     </style>
 </head>
 
 <body>
+    <gameOver>
+        <p>游戏结束</p>
+        <adorn></adorn>
+        <summ>
+            <p>得分</p>
+            <p id="summ-score" style="font-size: 2rem;color: white;">114514</p>
+            <button>重新开始</button>
+        </summ>
+    </gameOver>
     <scene>
         <score>114,514</score>
         <canvas id="tetris"></canvas>

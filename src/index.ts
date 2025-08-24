@@ -12,6 +12,7 @@ class Tetris {
     constructor() {
         this.initCanvas();
         this.initBoard();
+        this.initGameOver();
         this.setScore(0);
     }
 
@@ -37,6 +38,17 @@ class Tetris {
         this.width = canvas.width;
         this.height = canvas.height;
     }
+    initGameOver() {
+        const gameOver = document.querySelector("gameOver") as HTMLDivElement;
+        if (!gameOver) {
+            throw new MyError("Game Over not found");
+        }
+        const restart = gameOver.querySelector("button") as HTMLButtonElement;
+        restart.addEventListener("click", () => {
+            gameOver.style.display = "none";
+            this.start();
+        });
+    }
     initBoard() {
         const offsetY = -0.4 * this.width / 9;
         this.board = new Board(
@@ -52,7 +64,20 @@ class Tetris {
             this.setScore(this.score);
         };
         this.board.onGameOver = () => {
-            alert("Game Over");
+            const gameOver = document.querySelector("gameOver") as HTMLDivElement;
+            if (!gameOver) {
+                throw new MyError("Game Over not found");
+            }
+            gameOver.style.display = "flex";
+            const summScore = document.querySelector("#summ-score") as HTMLSpanElement;
+            if (!summScore) {
+                throw new MyError("Summ Score not found");
+            }
+            const score = document.querySelector("score") as HTMLSpanElement;
+            if (!score) {
+                throw new MyError("Score not found");
+            }
+            summScore.textContent = score.textContent!;
             clearInterval(this.timer!);
         };
     }
