@@ -1,5 +1,6 @@
 import { MyError } from "./error";
 import { Board } from "./board";
+import { isMobile } from "./utils";
 
 class Tetris {
     ctx: CanvasRenderingContext2D;
@@ -138,6 +139,9 @@ class Tetris {
     }
 }
 
-const tetris = new Tetris();
-tetris.start();
-console.log(tetris);
+if (isMobile()) {
+    alert("请使用电脑打开");
+} else {
+    const tetris = new Tetris();
+    tetris.start();
+}
