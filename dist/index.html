@@ -83,11 +83,6 @@
         const zoom = window.devicePixelRatio;
         const adjustedFontSize = baseFontSize / zoom;
         document.documentElement.style.fontSize = `${adjustedFontSize}px`;
-        console.log({
-            zoom: zoom,
-            adjustedFontSize: adjustedFontSize,
-        });
-
     }
     setFixedRootFontSize();
     window.addEventListener('resize', setFixedRootFontSize);
