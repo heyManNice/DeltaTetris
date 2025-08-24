@@ -73,6 +73,7 @@ class Tetris {
     constructor() {
         this.initCanvas();
         this.initBoard();
+        this.initKeyboard();
     }
 
     initCanvas() {
@@ -102,6 +103,27 @@ class Tetris {
         this.board = new Board(13, 9, offsetY, this.width, this.height);
         this.board.drawCells(this.ctx);
     }
+    initKeyboard(){
+        document.addEventListener("keydown", (e) => {
+            switch (e.key) {
+                case "w":
+                    this.wPress();
+                    break;
+                case "a":
+                    this.aPress();
+                    break;
+                case "s":
+                    this.sPress();
+                    break;
+                case "d":
+                    this.dPress();
+                    break;
+                case " ":
+                    this.SpacePress();
+                    break;
+            }
+        });
+    }
     setScore(value: number) {
         const score = document.querySelector("score");
         if (!score) {
@@ -121,7 +143,18 @@ class Tetris {
             this.setScore(this.score++);
         }, 1000);
     }
+    wPress() {
+        console.log("wPress");
+        
+    }
+    aPress() { }
+    sPress() { }
+    dPress() { }
+    SpacePress() {
+        console.log("SpacePress");
+        
+    }
 }
 
 const tetris = new Tetris();
-console.log(tetris);
+tetris.start();
