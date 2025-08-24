@@ -1,0 +1,9 @@
+{
+    "scripts": {
+        "dev": "esbuild ./src/index.ts --bundle --outfile=./dist/index.js --platform=browser --watch",
+        "build": "esbuild ./src/index.ts --bundle --outfile=./dist/index.js --platform=browser --minify"
+    },
+    "devDependencies": {
+        "esbuild": "^0.25.9"
+    }
+}

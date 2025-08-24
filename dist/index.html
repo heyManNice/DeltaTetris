@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三角洲方块</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        scene {
+            height: 100vh;
+            width: calc(100vh * 16 / 9);
+            margin: 0 auto;
+            right: 0;
+            position: absolute;
+        }
+
+        video {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            height: 89%;
+            -webkit-mask-image: url(./assets/mask.png);
+            mask-image: url(./assets/mask.png);
+            -webkit-mask-size: cover;
+            mask-size: cover;
+            -webkit-mask-position: center;
+            mask-position: center;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+        }
+
+        background>img {
+            height: 100%;
+        }
+
+        canvas {
+            position: absolute;
+            outline: solid 1px red;
+            height: 74.6%;
+            width: 29.95%;
+            bottom: 13.7%;
+            right: 5.6%;
+            z-index: 10;
+        }
+
+        score {
+            position: absolute;
+            color: #8A8F92;
+            top: 3.6%;
+            left: 79.97%;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <scene>
+        <score>114,514</score>
+        <canvas id="tetris"></canvas>
+        <video src="./assets/soldier.mp4" loop autoplay muted></video>
+        <background>
+            <img src="./assets/background.jpg" alt="bg">
+        </background>
+    </scene>
+</body>
+<script src="./index.js"></script>
+<script>
+    document.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+    })
+    function setFixedRootFontSize() {
+        const baseFontSize = 16;
+        const zoom = window.devicePixelRatio;
+        const adjustedFontSize = baseFontSize / zoom;
+        document.documentElement.style.fontSize = `${adjustedFontSize}px`;
+        console.log({
+            zoom: zoom,
+            adjustedFontSize: adjustedFontSize,
+        });
+
+    }
+    setFixedRootFontSize();
+    window.addEventListener('resize', setFixedRootFontSize);
+</script>
+
+</html>
