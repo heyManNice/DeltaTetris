@@ -6,27 +6,14 @@ class MyError extends Error {
     }
 }
 
-// 格子
-class Cell {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    isActive: boolean = false;
-    constructor(x: number, y: number, width: number, height: number) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-}
-
 // 板子
 class Board {
     rows: number;
     cols: number;
     offsetY: number;
-    cells: Cell[][];
+    cellWidth: number;
+    cellHeight: number;
+    cells: number[];
     constructor(
         rows: number = 13,
         cols: number = 9,
@@ -37,28 +24,23 @@ class Board {
         this.rows = rows;
         this.cols = cols;
         this.offsetY = offsetY;
-        this.cells = Array.from({ length: rows }, (_, row) => {
-            return Array.from({ length: cols }, (_, col) => {
-                const cellWidth = width / cols;
-                const cellHeight = (height - offsetY) / rows;
-                return new Cell(
-                    col * cellWidth,
-                    (row * cellHeight) + offsetY,
-                    cellWidth,
-                    cellHeight,
-                );
-            });
-        });
-        console.log(this.cells);
+        this.cellWidth = width / cols;
+        this.cellHeight = (height - offsetY) / rows;
+        this.cells = Array.from({ length: rows }, () => 0);
     }
     drawCells(ctx: CanvasRenderingContext2D) {
         ctx.strokeStyle = "rgba(0, 0, 0, 1)";
         ctx.lineWidth = 1;
-        this.cells.forEach((row) => {
-            row.forEach((cell) => {
-                ctx.strokeRect(cell.x, cell.y, cell.width, cell.height);
-            });
-        });
+        for (let y = 0; y < this.rows; y++) {
+            for (let x = 0; x < this.cols; x++) {
+                ctx.strokeRect(
+                    x * this.cellWidth,
+                    y * this.cellHeight + this.offsetY,
+                    this.cellWidth,
+                    this.cellHeight,
+                );
+            }
+        }
     }
 }
 
@@ -103,7 +85,7 @@ class Tetris {
         this.board = new Board(13, 9, offsetY, this.width, this.height);
         this.board.drawCells(this.ctx);
     }
-    initKeyboard(){
+    initKeyboard() {
         document.addEventListener("keydown", (e) => {
             switch (e.key) {
                 case "w":
@@ -145,14 +127,12 @@ class Tetris {
     }
     wPress() {
         console.log("wPress");
-        
     }
-    aPress() { }
-    sPress() { }
-    dPress() { }
+    aPress() {}
+    sPress() {}
+    dPress() {}
     SpacePress() {
         console.log("SpacePress");
-        
     }
 }
 
