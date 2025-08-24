@@ -1,4 +1,4 @@
-import { getBinaryBit, random } from "./utils";
+import { getBinaryBit, random, setBinaryBit } from "./utils";
 
 // 形状
 const SHAPES = {
@@ -140,7 +140,7 @@ export class Board {
         }
         this.cellsActive = {
             x: Math.floor((this.cols - shapeWidth) / 2),
-            y: 0,
+            y: -shape.length,
             data: shape,
         };
     }
@@ -153,6 +153,27 @@ export class Board {
             return;
         }
         this.cellsActive.y++;
+        const shapeData = this.cellsActive.data;
+        const shapeHeight = shapeData.length;
+        const shapeBottomRow = shapeData[shapeData.length - 1] << this.cellsActive.x;
+        const nextRow = this.cellsStatic[this.cellsActive.y + shapeHeight];
+        
+        if(nextRow === void 0 || (shapeBottomRow & nextRow) !== 0) {
+            this.merge();
+            this.addRandomShape();
+            return;
+        }
+    }
+    // 合并
+    merge() {
+        if (!this.cellsActive) {
+            return;
+        }
+        const data = this.cellsActive.data;
+        for (let y = 0; y < data.length; y++) {
+            this.cellsStatic[y + this.cellsActive.y] |= data[y] << this.cellsActive.x;
+        }
+        
     }
     draw() {
         this.ctx.clearRect(0, 0, this.boardWidth, this.boardHeight);
@@ -180,10 +201,13 @@ export class Board {
             this.draw();
         });
     }
-    wPress() {
+    addRandomShape() {
         const kinds = Object.keys(SHAPES);
         const randomKind = kinds[random(0, kinds.length - 1)];
         this.addShape(SHAPES[randomKind]);
+    }
+    wPress() {
+        this.addRandomShape();
     }
     aPress() {
         if (!this.cellsActive) return;
