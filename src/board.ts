@@ -225,5 +225,14 @@ export class Board {
             rotatedData.push(num);
         }
         this.cellsActive.data = rotatedData;
+
+        let maxWidth = 0;
+        for (let y = 0; y < this.cellsActive.data.length; y++) {
+            const row = this.cellsActive.data[y];
+            maxWidth = Math.max(maxWidth, row.toString(2).length);
+        }
+        while (this.cellsActive.x + maxWidth > this.cols) {
+            this.cellsActive.x--;
+        }
     }
 }
