@@ -12,6 +12,7 @@ class Tetris {
     constructor() {
         this.initCanvas();
         this.initBoard();
+        this.setScore(0);
     }
 
     initCanvas() {
@@ -46,6 +47,10 @@ class Tetris {
             this.height,
             this.ctx,
         );
+        this.board.onAddScore = () => {
+            this.score += 100;
+            this.setScore(this.score);
+        };
     }
 
     setScore(value: number) {
@@ -64,9 +69,9 @@ class Tetris {
     }
     start() {
         this.timer = setInterval(() => {
-            this.setScore(this.score++);
             this.loop();
-        }, 1000);
+        }, 500);
+        this.board.addRandomShape();
     }
     loop() {
         this.board.loop();

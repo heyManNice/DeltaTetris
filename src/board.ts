@@ -52,6 +52,7 @@ export class Board {
     };
     cellsStatic: number[];
     ctx: CanvasRenderingContext2D;
+    onAddScore: () => void;
     constructor(
         rows: number = 13,
         cols: number = 9,
@@ -145,14 +146,13 @@ export class Board {
         };
     }
     loop() {
-        this.draw();
         this.fall();
+        this.draw();
     }
     fall() {
         if (!this.cellsActive) {
             return;
         }
-        this.cellsActive.y++;
         const shapeData = this.cellsActive.data;
         const shapeHeight = shapeData.length;
         const shapeBottomRow = shapeData[shapeData.length - 1] << this.cellsActive.x;
@@ -162,6 +162,19 @@ export class Board {
             this.merge();
             this.addRandomShape();
             return;
+        }
+        this.cellsActive.y++;
+
+        // 如果有任意一行全为1，那么就消去，并加分
+        for (let y = 0; y < this.cellsStatic.length; y++) {
+            const row = this.cellsStatic[y];
+            if (row === Math.pow(2, this.cols) - 1) {
+                this.cellsStatic.splice(y, 1);
+                this.cellsStatic.unshift(0);
+                if (this.onAddScore) {
+                    this.onAddScore();
+                }
+            }
         }
     }
     // 合并
@@ -207,7 +220,6 @@ export class Board {
         this.addShape(SHAPES[randomKind]);
     }
     wPress() {
-        this.addRandomShape();
     }
     aPress() {
         if (!this.cellsActive) return;
