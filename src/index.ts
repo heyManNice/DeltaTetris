@@ -69,7 +69,6 @@ class Tetris {
         }, 1000);
     }
     loop() {
-        this.ctx.clearRect(0, 0, this.width, this.height);
         this.board.loop();
     }
 }
