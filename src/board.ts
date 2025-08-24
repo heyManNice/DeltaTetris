@@ -37,6 +37,7 @@ const SHAPES = {
 };
 
 export class Board {
+    icon: HTMLImageElement;
     rows: number;
     cols: number;
     offsetY: number;
@@ -66,30 +67,24 @@ export class Board {
         this.offsetY = offsetY;
         this.cellWidth = width / cols;
         this.cellHeight = (height - offsetY) / rows;
+        this.icon = new Image();
+        this.icon.src = "./assets/diamond.png";
+        this.icon.width = this.cellWidth;
+        this.icon.height = this.cellHeight;
         this.cellsStatic = Array.from({ length: rows }, () => 0);
         this.ctx = ctx;
         this.initKeyboard();
     }
     drawCells(ctx: CanvasRenderingContext2D) {
-        ctx.strokeStyle = "rgba(0, 0, 0, 1)";
-        ctx.fillStyle = "rgba(100, 0, 0, 0.5)";
-        ctx.lineWidth = 1;
         for (let y = 0; y < this.rows; y++) {
             const rowStatic = this.cellsStatic[y];
             for (let x = 0; x < this.cols; x++) {
                 const cellStatic = getBinaryBit(rowStatic, x);
-                ctx.strokeRect(
-                    x * this.cellWidth,
-                    y * this.cellHeight + this.offsetY,
-                    this.cellWidth,
-                    this.cellHeight,
-                );
                 if (cellStatic) {
-                    ctx.fillRect(
+                    this.drawCell(
+                        ctx,
                         x * this.cellWidth,
                         y * this.cellHeight + this.offsetY,
-                        this.cellWidth,
-                        this.cellHeight,
                     );
                 }
             }
@@ -97,22 +92,45 @@ export class Board {
         if (!this.cellsActive) {
             return;
         }
-        const { data } = this.cellsActive;
+        const data = this.cellsActive.data;
         for (let y = 0; y < data.length; y++) {
             const row = data[y];
             for (let x = 0; x < this.cols; x++) {
                 const cell = getBinaryBit(row, x);
                 if (cell) {
-                    ctx.fillRect(
+                    this.drawCell(
+                        ctx,
                         (x + this.cellsActive.x) * this.cellWidth,
                         (y + this.cellsActive.y) * this.cellHeight +
                             this.offsetY,
-                        this.cellWidth,
-                        this.cellHeight,
                     );
                 }
             }
         }
+    }
+    drawCell(ctx: CanvasRenderingContext2D, x: number, y: number) {
+        ctx.lineWidth = 1;
+        ctx.fillStyle = "#6b222a54";
+        ctx.fillRect(
+            x,
+            y,
+            this.cellWidth,
+            this.cellHeight,
+        );
+        ctx.drawImage(
+            this.icon,
+            x,
+            y,
+            this.cellWidth,
+            this.cellHeight,
+        );
+        ctx.font = "13px sans-serif";
+        ctx.fillStyle = "#ccccccff";
+        ctx.fillText(
+            "非洲之心",
+            x + 8,
+            y + 18,
+        );
     }
     addShape(shape: number[]) {
         let shapeWidth = 0;
