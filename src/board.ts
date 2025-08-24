@@ -54,6 +54,9 @@ export class Board {
     ctx: CanvasRenderingContext2D;
     onAddScore: () => void;
     onGameOver: () => void;
+    music = {
+        merge: new Audio("./assets/merge.mp3"),
+    };
     constructor(
         rows: number = 13,
         cols: number = 9,
@@ -181,6 +184,7 @@ export class Board {
 
         if (nextRow === void 0 || (shapeBottomRow & nextRow) !== 0) {
             this.merge();
+            this.music.merge.play();
             this.addRandomShape();
             return;
         }

@@ -9,13 +9,33 @@ class Tetris {
 
     timer: number | null = null;
     score: number = 0;
+    music = {
+        gameOver: new Audio("./assets/gameover.mp3"),
+        index: new Audio("./assets/index.mp3"),
+        score: new Audio("./assets/score.mp3"),
+    };
     constructor() {
+        this.initGameOver();
         this.initCanvas();
         this.initBoard();
-        this.initGameOver();
+        this.initMusic();
         this.setScore(0);
     }
-
+    initMusic() {
+        this.music.index.loop = true;
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                this.music.index.play();
+            } else {
+                this.music.index.pause();
+            }
+        });
+        let playIndexMusic = () => {
+            this.music.index.play();
+            document.removeEventListener("keydown", playIndexMusic);
+        };
+        document.addEventListener("keydown", playIndexMusic);
+    }
     initCanvas() {
         const canvas = document.getElementById("tetris") as HTMLCanvasElement;
         if (!canvas) {
@@ -62,14 +82,19 @@ class Tetris {
         this.board.onAddScore = () => {
             this.score += 100;
             this.setScore(this.score);
+            this.music.score.play();
         };
         this.board.onGameOver = () => {
-            const gameOver = document.querySelector("gameOver") as HTMLDivElement;
+            const gameOver = document.querySelector(
+                "gameOver",
+            ) as HTMLDivElement;
             if (!gameOver) {
                 throw new MyError("Game Over not found");
             }
             gameOver.style.display = "flex";
-            const summScore = document.querySelector("#summ-score") as HTMLSpanElement;
+            const summScore = document.querySelector(
+                "#summ-score",
+            ) as HTMLSpanElement;
             if (!summScore) {
                 throw new MyError("Summ Score not found");
             }
@@ -78,6 +103,8 @@ class Tetris {
                 throw new MyError("Score not found");
             }
             summScore.textContent = score.textContent!;
+            this.music.index.pause();
+            this.music.gameOver.play();
             clearInterval(this.timer!);
         };
     }
@@ -100,7 +127,11 @@ class Tetris {
         this.timer = setInterval(() => {
             this.loop();
         }, 500);
+        this.score = 0;
+        this.setScore(0);
         this.board.addRandomShape();
+        this.music.index.currentTime = 0;
+        this.music.index.play();
     }
     loop() {
         this.board.loop();
